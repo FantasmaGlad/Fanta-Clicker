@@ -5,27 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Baa-Clicker</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            background-image: url('images/BaaClickerBackground.png'); /* Chemin vers l'image */
-            background-size: cover;
-            background-position: center;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-    </style>
 </head>
 <body>
-    <h1>Baa-Clicker</h1>
-    <div class="clicker-container">
-        <button id="clickButton">
-            <img src="images/Baatman.png" alt="Icône Baatman">
-            Clique-moi !
-        </button>
-        <p id="score">Score : 0</p>
-    </div>
+    <h1 id="gameTitle">Baa-Clicker</h1>
+    <h2 id="playerName"></h2>
+    <button id="clickButton">
+        <img src="images/BaaTman.png" alt="Icône BaaTman" style="width: 40px; height: 40px;">
+        Clique-moi !
+    </button>
+    <p id="score">Score : 0</p>
 
     <script src="script.js"></script>
+    <script>
+        // Afficher le pseudonyme
+        document.getElementById("playerName").innerText = `Bienvenue, ${localStorage.getItem("pseudo")} !`;
+    </script>
 </body>
 </html>

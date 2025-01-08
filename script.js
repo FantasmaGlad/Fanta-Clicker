@@ -1,26 +1,31 @@
-console.log("Le jeu de Clicker est prêt !");
-let score = 0;  // Initialisation du score
+// Initialisation des variables
+let score = 0;
+let pseudo = localStorage.getItem("pseudo");
 
-// Charger le son de clic
-const clickSound = new Audio('sons/clic-souris.mp3');  // Chemin relatif vers le fichier son
-
-// Ajout de l'événement click pour augmenter le score
-document.getElementById("clickButton").addEventListener("click", () => {
-    score++;
-    document.getElementById("score").innerText = `Score : ${score}`;
-    clickSound.play();  // Jouer le son de clic
-});
-
-// Score automatique toutes les 5 secondes
-setInterval(() => {
-    score += 1;
-    document.getElementById("score").innerText = `Score : ${score}`;
-}, 5000);
+// Vérifier si un pseudonyme existe
+if (!pseudo) {
+    window.location.href = "welcome.html";  // Redirige vers la page d'accueil si pas de pseudo
+}
 
 // Charger le score sauvegardé lors du chargement de la page
 window.onload = function () {
-    if (localStorage.getItem("clickerScore")) {
-        score = parseInt(localStorage.getItem("clickerScore"));
-        document.getElementById("score").innerText = `Score : ${score}`;
+    const savedScore = localStorage.getItem("clickerScore");
+    if (savedScore) {
+        score = parseInt(savedScore);
     }
+    document.getElementById("score").innerText = `Score : ${score}`;
 };
+
+// Ajouter l'événement clic sur le bouton
+document.getElementById("clickButton").addEventListener("click", () => {
+    score++;
+    document.getElementById("score").innerText = `Score : ${score}`;
+    localStorage.setItem("clickerScore", score);  // Sauvegarde le score dans localStorage
+});
+
+// Reset du score (optionnel, bouton reset)
+function resetScore() {
+    score = 0;
+    localStorage.setItem("clickerScore", score);
+    document.getElementById("score").innerText = "Score : 0";
+}
