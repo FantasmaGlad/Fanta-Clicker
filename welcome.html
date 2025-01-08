@@ -3,15 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenue - BaaMix Clicker</title>
+    <title>Bienvenue sur Baa-Clicker</title>
     <link rel="stylesheet" href="style.css">
-    <script type="module">
-        // Import Firebase SDK
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+</head>
+<body>
+    <div class="welcome-container">
+        <h1>Bienvenue sur Baa-Clicker !</h1>
+        <p>Entrez votre pseudonyme pour commencer :</p>
+        <form id="pseudoForm">
+            <input type="text" id="pseudoInput" placeholder="Entrez votre pseudonyme" required>
+            <button type="submit">Commencer</button>
+        </form>
+    </div>
 
+    <div id="loadingMessage" style="display: none;">
+        <p>Chargement en cours...</p>
+    </div>
+
+    <script type="module">
+        // Import des modules Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+        // Configuration Firebase
         const firebaseConfig = {
-            apiKey: "AIzaSyAt4S0P5Jr1roapnPmDVw_MPqQfWtkb_dIk",
+            apiKey: "AIzaSyAt4S8P5J1roapnPmDVw_MPqgfwIKb_dIk",
             authDomain: "baamix-clicker.firebaseapp.com",
             projectId: "baamix-clicker",
             storageBucket: "baamix-clicker.appspot.com",
@@ -21,39 +37,89 @@
             databaseURL: "https://baamix-clicker-default-rtdb.europe-west1.firebasedatabase.app/"
         };
 
-        // Initialize Firebase
+        // Initialisation Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
-    </script>
-</head>
-<body>
-    <div class="welcome-container">
-        <h1>Baa-Clicker</h1>
-        <p>Bienvenue dans le jeu !</p>
-        <label for="pseudo">Entrez votre pseudonyme :</label>
-        <input type="text" id="pseudo" placeholder="Votre pseudo..." required>
-        <button id="startButton">Commencer l'aventure !</button>
-    </div>
 
-    <script>
-        document.getElementById("startButton").addEventListener("click", async () => {
-            const pseudo = document.getElementById("pseudo").value.trim();
+        // Gestion du formulaire de pseudonyme
+        document.getElementById('pseudoForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Empêche le rechargement de la page
+            const pseudo = document.getElementById('pseudoInput').value.trim();
+
             if (pseudo) {
-                localStorage.setItem("playerPseudo", pseudo);
+                document.getElementById('loadingMessage').style.display = "block"; // Affiche le message de chargement
+                localStorage.setItem('pseudo', pseudo); // Sauvegarde le pseudonyme dans le stockage local
 
-                // Enregistrer le pseudo dans Firebase
-                const playerRef = ref(database, `players/${pseudo}`);
-                await set(playerRef, {
+                // Enregistre le joueur dans la base de données
+                const joueurRef = ref(database, 'joueurs/' + pseudo);
+                set(joueurRef, {
                     pseudo: pseudo,
-                    date: new Date().toLocaleString(),
-                    score: 0
+                    score: 0,
+                    dateInscription: new Date().toISOString()
+                }).then(() => {
+                    // Redirection vers la page de jeu
+                    window.location.href = "index.html";
+                }).catch((error) => {
+                    console.error("Erreur lors de l'enregistrement : ", error);
+                    alert("Une erreur est survenue lors de l'enregistrement. Veuillez réessayer.");
+                    document.getElementById('loadingMessage').style.display = "none";
                 });
-
-                window.location.href = "index.html"; // Redirige vers la page du jeu
             } else {
-                alert("Veuillez entrer un pseudonyme avant de commencer !");
+                alert("Veuillez entrer un pseudonyme valide !");
             }
         });
     </script>
+
+    <style>
+        .welcome-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 1rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #loadingMessage {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #555;
+        }
+    </style>
+
 </body>
 </html>
