@@ -3,58 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenue dans Baa-Clicker</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #a1c4fd;
-            font-family: Arial, sans-serif;
-        }
-        .welcome-container {
-            text-align: center;
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        input {
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            margin-top: 10px;
-        }
-        button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-    </style>
+    <title>Bienvenue - BaaMix Clicker</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module">
+        // Import Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAt4S0P5Jr1roapnPmDVw_MPqQfWtkb_dIk",
+            authDomain: "baamix-clicker.firebaseapp.com",
+            projectId: "baamix-clicker",
+            storageBucket: "baamix-clicker.appspot.com",
+            messagingSenderId: "559143757551",
+            appId: "1:559143757551:web:c018039d3b34465132edd1a",
+            measurementId: "G-X7J216NSD9",
+            databaseURL: "https://baamix-clicker-default-rtdb.europe-west1.firebasedatabase.app/"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+    </script>
 </head>
 <body>
     <div class="welcome-container">
-        <h1>Bienvenue dans Baa-Clicker !</h1>
-        <p>Entrez votre pseudonyme pour commencer :</p>
-        <input type="text" id="pseudoInput" placeholder="Votre pseudo">
-        <button onclick="savePseudo()">Commencer</button>
+        <h1>Baa-Clicker</h1>
+        <p>Bienvenue dans le jeu !</p>
+        <label for="pseudo">Entrez votre pseudonyme :</label>
+        <input type="text" id="pseudo" placeholder="Votre pseudo..." required>
+        <button id="startButton">Commencer l'aventure !</button>
     </div>
 
     <script>
-        function savePseudo() {
-            const pseudoInput = document.getElementById("pseudoInput").value.trim();
-            if (pseudoInput) {
-                localStorage.setItem("pseudo", pseudoInput);  // Enregistre le pseudonyme
-                window.location.href = "index.html";  // Redirige vers le jeu
+        document.getElementById("startButton").addEventListener("click", async () => {
+            const pseudo = document.getElementById("pseudo").value.trim();
+            if (pseudo) {
+                localStorage.setItem("playerPseudo", pseudo);
+
+                // Enregistrer le pseudo dans Firebase
+                const playerRef = ref(database, `players/${pseudo}`);
+                await set(playerRef, {
+                    pseudo: pseudo,
+                    date: new Date().toLocaleString(),
+                    score: 0
+                });
+
+                window.location.href = "index.html"; // Redirige vers la page du jeu
             } else {
-                alert("Veuillez entrer un pseudonyme !");
+                alert("Veuillez entrer un pseudonyme avant de commencer !");
             }
-        }
+        });
     </script>
 </body>
 </html>

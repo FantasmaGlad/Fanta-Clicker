@@ -1,39 +1,96 @@
-h1 {
-    font-size: 48px;
-    font-weight: bold;
+/* Style de la page d'accueil (welcome.html) */
+body {
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2 {
+    color: #333;
+    margin-top: 40px;
+}
+
+input[type="text"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
     margin-top: 20px;
 }
 
-.clicker-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: calc(100vh - 100px);
+button {
+    padding: 15px 30px;
+    font-size: 18px;
+    color: white;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
 }
 
+button:hover {
+    background-color: #45a049;
+}
+
+.container {
+    margin-top: 50px;
+}
+
+/* Style de la page de jeu (index.html) */
 #clickButton {
-    padding: 40px;
-    font-size: 24px;
-    background-color: #4CAF50;
+    width: 100px;
+    height: 100px;
+    background-color: #008CBA;
     color: white;
+    font-size: 18px;
+    border-radius: 50%;
     border: none;
-    border-radius: 10px;
-    margin: 20px 0;
-    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+    margin: 20px auto;
+    display: block;
+    transition: transform 0.1s ease-in-out;
 }
 
 #clickButton img {
-    width: 20px;
-    height: 20px;
-    margin-bottom: 10px;
-}
-
-#score {
-    font-size: 24px;
-    color: white;
+    width: 70%;
+    height: 70%;
+    display: block;
+    margin: 0 auto;
+    border-radius: 50%;
 }
 
 #clickButton:hover {
+    background-color: #005f73;
+}
+
+#clickButton:active {
     transform: scale(1.1);
+}
+
+#score {
+    margin-top: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+#welcomeMessage {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Style général des conteneurs */
+.main-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+}
+
+footer {
+    margin-top: 40px;
+    font-size: 12px;
+    color: #666;
 }
