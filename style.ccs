@@ -1,14 +1,39 @@
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin-top: 50px;
+h1 {
+    font-size: 48px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.clicker-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 100px);
 }
 
 #clickButton {
-    padding: 20px;
-    font-size: 18px;
+    padding: 40px;
+    font-size: 24px;
     background-color: #4CAF50;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
+    margin: 20px 0;
+    transition: transform 0.2s ease-in-out;
+}
+
+#clickButton img {
+    width: 20px;
+    height: 20px;
+    margin-bottom: 10px;
+}
+
+#score {
+    font-size: 24px;
+    color: white;
+}
+
+#clickButton:hover {
+    transform: scale(1.1);
 }
