@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Améliorations - Baa-Clicker</title>
+    <link rel="stylesheet" href="../assets/styles/global.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #4a00e0, #8e2de2);
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .upgrades-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .upgrade-item {
+            background-color: #f4f4f4;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .upgrade-item:hover {
+            background-color: #eaeaea;
+        }
+
+        .upgrade-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .upgrade-cost {
+            color: #888;
+        }
+
+        .buy-button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .buy-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="upgrades-container">
+        <h1>Améliorations disponibles</h1>
+        <div id="upgradesList"></div>
+        <p style="text-align: center; font-size: 1.2rem; margin-top: 20px;" id="totalProduction">
+            Production par seconde totale : <span id="totalPerSecond">0</span>
+        </p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+        import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAt4S0P5Jr1roapnPmDVw_MPqQfWtkb_dIk",
+            authDomain: "baamix-clicker.firebaseapp.com",
+            projectId: "baamix-clicker",
+            storageBucket: "baamix-clicker.appspot.com",
+            messagingSenderId: "559143757551",
+            appId: "1:559143757551:web:c018039d3b34465132edd1a",
+            measurementId: "G-X7J216NSD9",
+            databaseURL: "https://baamix-clicker-default-rtdb.europe-west1.firebasedatabase.app/"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        const pseudo = localStorage.getItem("playerPseudo");
+        if (!pseudo) {
+            window.location.href = "welcome.html";
+        }
+
+        const upgrades = [
+            { name: "Ferme à Baamix", baseCost: 50, production: 1, count: 0 },
+            { name: "Usine à Baamix", baseCost: 200, production: 5, count: 0 },
+            { name: "Super Machine", baseCost: 500, production: 10, count: 0 },
+        ];
+
+        function getUpgradeCost(baseCost, count) {
+            return Math.floor(baseCost * Math.pow(1.1, count));
+        }
+
+        function updateUpgradesUI() {
+            const upgradesList = document.getElementById("upgradesList");
+            upgradesList.innerHTML = "";
+            let totalProductionPerSecond = 0;
+
+            upgrades.forEach((upgrade, index) => {
+                const currentCost = getUpgradeCost(upgrade.baseCost, upgrade.count);
+                totalProductionPerSecond += upgrade.production * upgrade.count;
+
+                const upgradeItem = document.createElement("div");
+                upgradeItem.className = "upgrade-item";
+
+                upgradeItem.innerHTML = `
+                    <div>
+                        <span class="upgrade-title">${upgrade.name}</span><br>
+                        <span class="upgrade-cost">Coût : ${currentCost} points</span><br>
+                        <span class="upgrade-count">Achats : ${upgrade.count}</span>
+                    </div>
+                    <button class="buy-button" data-index="${index}">Acheter</button>
+                `;
+
+                upgradesList.appendChild(upgradeItem);
+            });
+
+            document.getElementById("totalPerSecond").innerText = totalProductionPerSecond;
+        }
+
+        function buyUpgrade(index) {
+            const upgrade = upgrades[index];
+            const currentCost = getUpgradeCost(upgrade.baseCost, upgrade.count);
+
+            let score = parseInt(localStorage.getItem("score")) || 0;
+            if (score >= currentCost) {
+                score -= currentCost;
+                upgrade.count++;
+                localStorage.setItem("score", score);
+
+                const playerRef = ref(database, `players/${pseudo}`);
+                update(playerRef, { [`${upgrade.name.toLowerCase().replace(/ /g, "_")}Count`]: upgrade.count });
+
+                updateUpgradesUI();
+                alert(`Vous avez acheté une ${upgrade.name} ! Production améliorée.`);
+            }
+        }
+
+        document.addEventListener("click", function (e) {
+            if (e.target.classList.contains("buy-button")) {
+                const index = e.target.getAttribute("data-index");
+                buyUpgrade(parseInt(index));
+            }
+        });
+
+        window.onload = function () {
+            updateUpgradesUI();
+        };
+    </script>
+</body>
+</html>
