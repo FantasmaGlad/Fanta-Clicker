@@ -4,12 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BaaMix Clicker</title>
-    <link rel="stylesheet" href="style.css">
+</head>
+<body style="margin: 0; padding: 0;">
+
+    <!-- Conteneur principal avec le fond intégré -->
+    <div class="game-container" style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: url('images/BaaClickerBackground.png') no-repeat center center fixed;
+        background-size: cover;
+        padding: 20px;
+    ">
+        <h1 style="color: #ff5bf2; font-size: 4rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">BaaClicker</h1>
+        <p id="welcomeMessage" style="color: #ff5bf2; font-size: 1.5rem;">Bienvenue !</p>
+
+        <!-- Bouton principal -->
+        <button id="clickButton" style="
+            width: 120px;
+            height: 120px;
+            background-color: #ff5bf2;
+            border-radius: 50%;
+            border: none;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: transform 0.1s ease-in-out;
+        ">
+            <img src="images/BaaTman.png" alt="Icône BaaTman" style="
+                width: 80%;
+                height: 80%;
+                border-radius: 50%;
+            ">
+        </button>
+
+        <p id="score" style="color: white; font-size: 1.5rem; margin-top: 20px;">Score : 0</p>
+    </div>
+
+    <!-- Script pour le jeu -->
     <script type="module">
-        // Import Firebase SDK
+        // Import des fonctions Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
         import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
+        // Configuration Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyAt4S0P5Jr1roapnPmDVw_MPqQfWtkb_dIk",
             authDomain: "baamix-clicker.firebaseapp.com",
@@ -21,38 +60,26 @@
             databaseURL: "https://baamix-clicker-default-rtdb.europe-west1.firebasedatabase.app/"
         };
 
-        // Initialize Firebase
+        // Initialisation de Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
-    </script>
-</head>
-<body>
-    <div class="game-container">
-        <h1>Baa-Clicker</h1>
-        <p id="welcomeMessage"></p>
-        <button id="clickButton">
-            <img src="images/BaaTman.png" alt="Icône BaaTman" class="click-image">
-            Clique-moi !
-        </button>
-        <p id="score">Score : 0</p>
-    </div>
 
-    <script>
-        // Récupérer le pseudo depuis localStorage
+        // Récupération du pseudonyme
         const pseudo = localStorage.getItem("playerPseudo");
         if (!pseudo) {
-            window.location.href = "welcome.html";  // Redirection si pas de pseudo
+            window.location.href = "welcome.html"; // Redirection si le pseudo n'existe pas
         }
 
         document.getElementById("welcomeMessage").innerText = `Bienvenue, ${pseudo} !`;
 
-        // Charger le son de clic
+        // Chargement du son de clic
         const clickSound = new Audio('sons/clic-souris.mp3');
 
+        // Initialisation du score
         let score = 0;
 
         // Charger le score sauvegardé lors du chargement
-        window.onload = async function () {
+        window.onload = function () {
             const savedScore = localStorage.getItem(`score_${pseudo}`);
             if (savedScore) {
                 score = parseInt(savedScore);
@@ -60,7 +87,7 @@
             }
         };
 
-        // Gestion du clic
+        // Gestion du clic sur le bouton
         document.getElementById("clickButton").addEventListener("click", () => {
             score++;
             document.getElementById("score").innerText = `Score : ${score}`;
@@ -69,12 +96,15 @@
             // Sauvegarder localement le score
             localStorage.setItem(`score_${pseudo}`, score);
 
-            // Mettre à jour le score dans Firebase
-            const playerRef = ref(database, `players/${pseudo}`);
+            // Mise à jour du score dans Firebase
+            const playerRef = ref(database, `joueurs/${pseudo}`);
             update(playerRef, {
-                score: score
+                pseudo: pseudo,
+                score: score,
+                lastClick: new Date().toISOString()
             });
         });
     </script>
+
 </body>
 </html>

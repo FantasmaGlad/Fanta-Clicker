@@ -1,64 +1,41 @@
-/* Style de la page d'accueil (welcome.html) */
+/* Style général */
 body {
     font-family: 'Arial', sans-serif;
-    text-align: center;
-    background-color: #f2f2f2;
     margin: 0;
     padding: 0;
+    background-image: url('images/BaaClickerBackground.png'); /* Ajout du fond d'écran */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
 }
 
-h1, h2 {
-    color: #333;
-    margin-top: 40px;
+h1 {
+    font-size: 3rem;
+    color: #ff66cc;
+    text-shadow: 2px 2px 8px #333;
+    margin-bottom: 20px;
 }
 
-input[type="text"] {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-top: 20px;
-}
-
-button {
-    padding: 15px 30px;
-    font-size: 18px;
-    color: white;
-    background-color: #4CAF50;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-.container {
-    margin-top: 50px;
-}
-
-/* Style de la page de jeu (index.html) */
 #clickButton {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     background-color: #008CBA;
-    color: white;
-    font-size: 18px;
-    border-radius: 50%;
     border: none;
+    border-radius: 50%;
     cursor: pointer;
-    margin: 20px auto;
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     transition: transform 0.1s ease-in-out;
 }
 
 #clickButton img {
     width: 70%;
     height: 70%;
-    display: block;
-    margin: 0 auto;
     border-radius: 50%;
 }
 
@@ -71,26 +48,86 @@ button:hover {
 }
 
 #score {
+    font-size: 2rem;
+    color: #fff;
     margin-top: 20px;
-    font-size: 24px;
-    color: #333;
 }
 
 #welcomeMessage {
-    font-size: 26px;
-    font-weight: bold;
+    font-size: 1.5rem;
+    color: #ff66cc;
     margin-bottom: 20px;
 }
 
-/* Style général des conteneurs */
 .main-container {
     padding: 20px;
     max-width: 800px;
     margin: auto;
+    border-radius: 15px;
+    backdrop-filter: blur(10px) brightness(0.8);
+}
+
+input[type="text"] {
+    padding: 15px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 10px;
+    width: 80%;
+    margin-top: 20px;
+    text-align: center;
+}
+
+button {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+button:hover {
+    background-color: #45a049;
 }
 
 footer {
     margin-top: 40px;
     font-size: 12px;
-    color: #666;
+    color: #eee;
+}
+
+/* Page welcome spécifique */
+.welcome-container {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 40px;
+    border-radius: 15px;
+}
+
+#loadingMessage {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    color: #ff66cc;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    #clickButton {
+        width: 120px;
+        height: 120px;
+    }
+
+    #score {
+        font-size: 1.5rem;
+    }
+
+    button {
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
 }
