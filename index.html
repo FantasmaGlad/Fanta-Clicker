@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BaaMix Clicker</title>
+    <title>Baa-Clicker</title>
     <link rel="stylesheet" href="style.css">
     <script type="module">
-        // Import Firebase SDK
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
         import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
@@ -22,50 +20,50 @@
             databaseURL: "https://baamix-clicker-default-rtdb.europe-west1.firebasedatabase.app/"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
     </script>
 </head>
-
 <body>
     <div class="main-container">
         <h1>Baa-Clicker</h1>
-        <p id="welcomeMessage"></p>
-
         <div class="game-layout">
-            <!-- Jeu principal -->
-            <div class="clicker-container">
-                <button id="clickButton">
+            <!-- Colonne de gauche : bouton et score -->
+            <div class="left-column">
+                <p id="welcomeMessage"></p>
+                <button id="clickButton" class="circular-button">
                     <img src="images/BaaTman.png" alt="Icône BaaTman" class="click-image">
                     Clique-moi !
                 </button>
                 <p id="score">Score : 0</p>
             </div>
 
-            <!-- Bandeau des améliorations -->
-            <div class="upgrade-banner">
+            <!-- Colonne de droite : bandeau d'améliorations -->
+            <div class="right-column">
                 <h2>Améliorations</h2>
-                <div class="upgrade" id="ferme">
-                    <p>Ferme à Baamix</p>
-                    <p>Produit automatiquement des points toutes les secondes.</p>
-                    <button id="buyFerme">Acheter pour 50 points</button>
-                </div>
-                <div class="upgrade" id="usine">
-                    <p>Usine à Baamix</p>
-                    <p>Double votre production de points.</p>
-                    <button id="buyUsine">Acheter pour 200 points</button>
-                </div>
-                <div class="upgrade" id="machine">
-                    <p>Super Machine</p>
-                    <p>Génère un gros bonus toutes les minutes.</p>
-                    <button id="buyMachine">Acheter pour 500 points</button>
+                <div id="upgradeContainer">
+                    <div class="upgrade-item" id="ferme">
+                        <p>Ferme à Baamix (1 point/seconde)</p>
+                        <button onclick="acheterUpgrade('ferme', 50)">Acheter pour 50 points</button>
+                        <p><span id="fermeCount">0</span> achetée(s)</p>
+                    </div>
+                    <div class="upgrade-item" id="usine">
+                        <p>Usine à Baamix (5 points/seconde)</p>
+                        <button onclick="acheterUpgrade('usine', 200)">Acheter pour 200 points</button>
+                        <p><span id="usineCount">0</span> achetée(s)</p>
+                    </div>
+                    <div class="upgrade-item" id="superMachine">
+                        <p>Super Machine (10 points/seconde)</p>
+                        <button onclick="acheterUpgrade('superMachine', 500)">Acheter pour 500 points</button>
+                        <p><span id="superMachineCount">0</span> achetée(s)</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // Récupération du pseudo depuis le localStorage
         const pseudo = localStorage.getItem("playerPseudo");
         if (!pseudo) {
             window.location.href = "welcome.html";  // Redirection si pas de pseudo
@@ -74,11 +72,7 @@
         document.getElementById("welcomeMessage").innerText = `Bienvenue, ${pseudo} !`;
 
         const clickSound = new Audio('sons/clic-souris.mp3');
-
         let score = 0;
-        let fermePoints = 1;
-        let usinePoints = 0;
-        let machinePoints = 0;
 
         window.onload = function () {
             const savedScore = localStorage.getItem(`score_${pseudo}`);
@@ -88,68 +82,33 @@
             }
         };
 
-        // Fonction pour ajouter des points manuellement
         document.getElementById("clickButton").addEventListener("click", () => {
             score++;
             document.getElementById("score").innerText = `Score : ${score}`;
             clickSound.play();
             localStorage.setItem(`score_${pseudo}`, score);
-
             const playerRef = ref(database, `players/${pseudo}`);
             update(playerRef, { score: score });
         });
 
-        // Achats d'améliorations
-        document.getElementById("buyFerme").addEventListener("click", () => {
-            if (score >= 50) {
-                score -= 50;
-                fermePoints += 1;
+        // Fonction d'achat d'améliorations
+        function acheterUpgrade(type, prixInitial) {
+            const playerRef = ref(database, `players/${pseudo}/upgrades`);
+            const currentCount = parseInt(document.getElementById(`${type}Count`).innerText) || 0;
+            const currentPrice = Math.round(prixInitial * Math.pow(1.01, currentCount));
+
+            if (score >= currentPrice) {
+                score -= currentPrice;
                 document.getElementById("score").innerText = `Score : ${score}`;
-                localStorage.setItem(`score_${pseudo}`, score);
-                alert("Ferme achetée ! Production améliorée.");
+                const newCount = currentCount + 1;
+                document.getElementById(`${type}Count`).innerText = newCount;
+
+                update(playerRef, { [type]: newCount });
+                alert(`${type.charAt(0).toUpperCase() + type.slice(1)} achetée ! Production améliorée.`);
             } else {
-                alert("Pas assez de points pour acheter cette amélioration !");
+                alert("Vous n'avez pas assez de points !");
             }
-        });
-
-        document.getElementById("buyUsine").addEventListener("click", () => {
-            if (score >= 200) {
-                score -= 200;
-                usinePoints += 2;
-                document.getElementById("score").innerText = `Score : ${score}`;
-                alert("Usine achetée ! Production doublée.");
-            } else {
-                alert("Pas assez de points pour acheter cette amélioration !");
-            }
-        });
-
-        document.getElementById("buyMachine").addEventListener("click", () => {
-            if (score >= 500) {
-                score -= 500;
-                machinePoints += 10;
-                document.getElementById("score").innerText = `Score : ${score}`;
-                alert("Super Machine achetée ! Générez des bonus chaque minute !");
-            } else {
-                alert("Pas assez de points pour acheter cette amélioration !");
-            }
-        });
-
-        // Production automatique
-        setInterval(() => {
-            score += fermePoints;
-            document.getElementById("score").innerText = `Score : ${score}`;
-            localStorage.setItem(`score_${pseudo}`, score);
-        }, 1000);  // Production toutes les secondes
-
-        // Bonus toutes les minutes
-        setInterval(() => {
-            if (machinePoints > 0) {
-                score += machinePoints;
-                document.getElementById("score").innerText = `Score : ${score}`;
-                alert("Bonus de Super Machine ajouté !");
-            }
-        }, 60000);  // Une fois par minute
+        }
     </script>
 </body>
-
 </html>
