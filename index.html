@@ -4,45 +4,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BaaMix Clicker</title>
-</head>
-<body style="margin: 0; padding: 0;">
+    <style>
+        /* Style de la page du jeu */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0077b6, #9d4edd);
+            color: white;
+            text-align: center;
+        }
 
-    <!-- Conteneur principal avec le fond intégré -->
-    <div class="game-container" style="
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        background: url('images/BaaClickerBackground.png') no-repeat center center fixed;
-        background-size: cover;
-        padding: 20px;
-    ">
-        <h1 style="color: #ff5bf2; font-size: 4rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">BaaClicker</h1>
-        <p id="welcomeMessage" style="color: #ff5bf2; font-size: 1.5rem;">Bienvenue !</p>
+        .game-container {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
 
-        <!-- Bouton principal -->
-        <button id="clickButton" style="
-            width: 120px;
-            height: 120px;
-            background-color: #ff5bf2;
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        #welcomeMessage {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        #clickButton {
+            width: 150px;
+            height: 150px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 1.5rem;
             border-radius: 50%;
             border: none;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
             cursor: pointer;
-            transition: transform 0.1s ease-in-out;
-        ">
-            <img src="images/BaaTman.png" alt="Icône BaaTman" style="
-                width: 80%;
-                height: 80%;
-                border-radius: 50%;
-            ">
-        </button>
+            transition: transform 0.1s ease-in-out, background-color 0.3s;
+        }
 
-        <p id="score" style="color: white; font-size: 1.5rem; margin-top: 20px;">Score : 0</p>
+        #clickButton span {
+            display: block;
+            margin-top: 40%;
+            font-size: 1.2rem;
+        }
+
+        #clickButton:hover {
+            background-color: #3e8e41;
+        }
+
+        #clickButton:active {
+            transform: scale(1.1);
+        }
+
+        #score {
+            margin-top: 20px;
+            font-size: 2rem;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            #clickButton {
+                width: 120px;
+                height: 120px;
+            }
+
+            #score {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Baa-Clicker</h1>
+        <p id="welcomeMessage">Bienvenue, joueur !</p>
+        <button id="clickButton">
+            <span>Clique-moi !</span>
+        </button>
+        <p id="score">Score : 0</p>
     </div>
 
-    <!-- Script pour le jeu -->
     <script type="module">
         // Import des fonctions Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
@@ -50,24 +103,24 @@
 
         // Configuration Firebase
         const firebaseConfig = {
-            apiKey: "AIzaSyAt4S0P5Jr1roapnPmDVw_MPqQfWtkb_dIk",
+            apiKey: "AIzaSyAt4S0P...",
             authDomain: "baamix-clicker.firebaseapp.com",
+            databaseURL: "https://baamix-clicker-default-rtdb.europe-west1.firebasedatabase.app/",
             projectId: "baamix-clicker",
             storageBucket: "baamix-clicker.appspot.com",
             messagingSenderId: "559143757551",
             appId: "1:559143757551:web:c018039d3b34465132edd1a",
-            measurementId: "G-X7J216NSD9",
-            databaseURL: "https://baamix-clicker-default-rtdb.europe-west1.firebasedatabase.app/"
+            measurementId: "G-X7J216NSD9"
         };
 
-        // Initialisation de Firebase
+        // Initialisation Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
         // Récupération du pseudonyme
-        const pseudo = localStorage.getItem("playerPseudo");
+        const pseudo = localStorage.getItem('pseudo');
         if (!pseudo) {
-            window.location.href = "welcome.html"; // Redirection si le pseudo n'existe pas
+            window.location.href = "welcome.html";  // Redirection vers welcome si le pseudo est absent
         }
 
         document.getElementById("welcomeMessage").innerText = `Bienvenue, ${pseudo} !`;
@@ -75,7 +128,6 @@
         // Chargement du son de clic
         const clickSound = new Audio('sons/clic-souris.mp3');
 
-        // Initialisation du score
         let score = 0;
 
         // Charger le score sauvegardé lors du chargement
@@ -93,18 +145,16 @@
             document.getElementById("score").innerText = `Score : ${score}`;
             clickSound.play();  // Jouer le son
 
-            // Sauvegarder localement le score
+            // Sauvegarde locale du score
             localStorage.setItem(`score_${pseudo}`, score);
 
             // Mise à jour du score dans Firebase
-            const playerRef = ref(database, `joueurs/${pseudo}`);
+            const playerRef = ref(database, `players/${pseudo}`);
             update(playerRef, {
-                pseudo: pseudo,
                 score: score,
                 lastClick: new Date().toISOString()
             });
         });
     </script>
-
 </body>
 </html>
