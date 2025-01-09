@@ -1,30 +1,29 @@
 // Import des fonctions Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-import { getDatabase, ref, set, update } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
 // Configuration Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyAt4S0P...",
+    apiKey: "AIzaSyAt4S0P5Jr1roapnPmDVw_MPqQfWtkb_dIk",
     authDomain: "baamix-clicker.firebaseapp.com",
-    databaseURL: "https://baamix-clicker-default-rtdb.europe-west1.firebasedatabase.app/",
     projectId: "baamix-clicker",
     storageBucket: "baamix-clicker.appspot.com",
     messagingSenderId: "559143757551",
     appId: "1:559143757551:web:c018039d3b34465132edd1a",
-    measurementId: "G-X7J216NSD9"
+    measurementId: "G-X7J216NSD9",
+    databaseURL: "https://baamix-clicker-default-rtdb.europe-west1.firebasedatabase.app/"
 };
 
 // Initialisation de Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-// Récupération du pseudonyme depuis le localStorage
-const pseudo = localStorage.getItem("pseudo");
+// Récupération du pseudo
+const pseudo = localStorage.getItem("playerPseudo");
 if (!pseudo) {
-    window.location.href = "welcome.html"; // Redirection vers la page d'accueil si pas de pseudo
+    window.location.href = "welcome.html";  // Redirection si pas de pseudo
 }
 
-// Affichage du message de bienvenue
 document.getElementById("welcomeMessage").innerText = `Bienvenue, ${pseudo} !`;
 
 // Chargement du son
@@ -32,14 +31,20 @@ const clickSound = new Audio('sons/clic-souris.mp3');
 
 // Initialisation du score
 let score = 0;
+let farmsOwned = 0;
+let factoriesOwned = 0;
+let machinesOwned = 0;
 
-// Charger le score sauvegardé lors du chargement de la page
+// Chargement du score sauvegardé lors du chargement de la page
 window.onload = function () {
     const savedScore = localStorage.getItem(`score_${pseudo}`);
     if (savedScore) {
         score = parseInt(savedScore);
         document.getElementById("score").innerText = `Score : ${score}`;
     }
+    farmsOwned = parseInt(localStorage.getItem("farmsOwned")) || 0;
+    factoriesOwned = parseInt(localStorage.getItem("factoriesOwned")) || 0;
+    machinesOwned = parseInt(localStorage.getItem("machinesOwned")) || 0;
 };
 
 // Fonction de clic sur le bouton
@@ -51,26 +56,49 @@ document.getElementById("clickButton").addEventListener("click", () => {
     // Sauvegarde locale du score
     localStorage.setItem(`score_${pseudo}`, score);
 
-    // Mise à jour du score dans la base de données Firebase
+    // Mise à jour du score dans Firebase
     const playerRef = ref(database, `players/${pseudo}`);
     update(playerRef, {
-        pseudo: pseudo,
         score: score,
         lastClick: new Date().toISOString()
     });
 });
 
-// Fonction pour réinitialiser le score
-document.getElementById("resetButton")?.addEventListener("click", () => {
-    score = 0;
+// Génération automatique des points
+setInterval(() => {
+    if (farmsOwned > 0) score += farmsOwned;  // Ferme génère 1 point/seconde
+    if (factoriesOwned > 0) score += factoriesOwned * 2;  // Usine génère 2 points/seconde
+    if (machinesOwned > 0) score += machinesOwned * 5;  // Super machine génère 5 points/seconde
+
     document.getElementById("score").innerText = `Score : ${score}`;
     localStorage.setItem(`score_${pseudo}`, score);
 
-    // Réinitialisation du score dans Firebase
     const playerRef = ref(database, `players/${pseudo}`);
     update(playerRef, {
-        score: score,
-        lastReset: new Date().toISOString()
+        score: score
     });
-    alert("Score réinitialisé !");
-});
+}, 1000);
+
+// Fonction pour acheter des améliorations
+const purchaseUpgrade = (type, cost) => {
+    if (score >= cost) {
+        score -= cost;
+        if (type === "farm") farmsOwned++;
+        if (type === "factory") factoriesOwned++;
+        if (type === "machine") machinesOwned++;
+
+        localStorage.setItem(`score_${pseudo}`, score);
+        localStorage.setItem("farmsOwned", farmsOwned);
+        localStorage.setItem("factoriesOwned", factoriesOwned);
+        localStorage.setItem("machinesOwned", machinesOwned);
+
+        alert(`Amélioration achetée : ${type.toUpperCase()} !`);
+    } else {
+        alert("Score insuffisant pour cette amélioration.");
+    }
+};
+
+// Associer les boutons aux achats
+document.getElementById("buyFarm").addEventListener("click", () => purchaseUpgrade("farm", 50));
+document.getElementById("buyFactory").addEventListener("click", () => purchaseUpgrade("factory", 200));
+document.getElementById("buyMachine").addEventListener("click", () => purchaseUpgrade("machine", 500));

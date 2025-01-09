@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Améliorations Baa-Clicker</title>
+</head>
+<body>
+    <div class="upgrade-banner">
+        <h2>Améliorations</h2>
+        <div class="upgrade" id="upgradeFarm">
+            <p>Ferme à Baamix</p>
+            <p>Produit automatiquement des points toutes les secondes.</p>
+            <button id="buyFarm">Acheter pour 50 points</button>
+        </div>
+        <div class="upgrade" id="upgradeFactory">
+            <p>Usine à Baamix</p>
+            <p>Double votre production de points.</p>
+            <button id="buyFactory">Acheter pour 200 points</button>
+        </div>
+        <div class="upgrade" id="upgradeMachine">
+            <p>Super Machine</p>
+            <p>Génère des points toutes les minutes.</p>
+            <button id="buyMachine">Acheter pour 500 points</button>
+        </div>
+    </div>
+
+    <script>
+        // Récupération du score depuis localStorage
+        let score = parseInt(localStorage.getItem("currentScore")) || 0;
+
+        // Variables pour les améliorations
+        let farmsOwned = 0;
+        let factoriesOwned = 0;
+        let machinesOwned = 0;
+
+        // Vérification des ressources pour acheter
+        const updateUpgradeButtons = () => {
+            document.getElementById("buyFarm").disabled = score < 50;
+            document.getElementById("buyFactory").disabled = score < 200;
+            document.getElementById("buyMachine").disabled = score < 500;
+        };
+
+        // Fonction d'achat de ferme
+        document.getElementById("buyFarm").addEventListener("click", () => {
+            if (score >= 50) {
+                score -= 50;
+                farmsOwned++;
+                localStorage.setItem("currentScore", score);
+                localStorage.setItem("farmsOwned", farmsOwned);
+                updateUpgradeButtons();
+                alert(`Ferme achetée ! Total : ${farmsOwned}`);
+            }
+        });
+
+        // Fonction d'achat d'usine
+        document.getElementById("buyFactory").addEventListener("click", () => {
+            if (score >= 200) {
+                score -= 200;
+                factoriesOwned++;
+                localStorage.setItem("currentScore", score);
+                localStorage.setItem("factoriesOwned", factoriesOwned);
+                updateUpgradeButtons();
+                alert(`Usine achetée ! Total : ${factoriesOwned}`);
+            }
+        });
+
+        // Fonction d'achat de super machine
+        document.getElementById("buyMachine").addEventListener("click", () => {
+            if (score >= 500) {
+                score -= 500;
+                machinesOwned++;
+                localStorage.setItem("currentScore", score);
+                localStorage.setItem("machinesOwned", machinesOwned);
+                updateUpgradeButtons();
+                alert(`Super machine achetée ! Total : ${machinesOwned}`);
+            }
+        });
+
+        // Génération automatique des points
+        setInterval(() => {
+            if (farmsOwned > 0) score += farmsOwned;
+            if (factoriesOwned > 0) score += factoriesOwned * 2;
+            if (machinesOwned > 0) score += machinesOwned * 5;
+
+            document.getElementById("score").innerText = `Score : ${score}`;
+            localStorage.setItem("currentScore", score);
+            updateUpgradeButtons();
+        }, 1000);
+    </script>
+</body>
+</html>

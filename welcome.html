@@ -4,28 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bienvenue sur Baa-Clicker</title>
-    <style>
-        /* Style de la page d'accueil */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #4361ee, #f72585);
-            color: white;
-            text-align: center;
-        }
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="welcome-container">
+        <h1>Baa-Clicker</h1>
+        <p class="subtitle">Rentre ton pseudonyme pour commencer ton aventure :</p>
+        <form id="pseudoForm">
+            <input type="text" id="pseudoInput" placeholder="Entrez votre pseudonyme" required>
+            <button type="submit" class="click-button">
+                <img src="images/BaaTman.png" alt="Icône BaaTman" class="button-image">
+                Commencer
+            </button>
+        </form>
+    </div>
 
+    <div id="loadingMessage" style="display: none;">
+        <p>Chargement en cours...</p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAt4S0P5Jr1roapnPmDVw_MPqQfWtkb_dIk",
+            authDomain: "baamix-clicker.firebaseapp.com",
+            projectId: "baamix-clicker",
+            storageBucket: "baamix-clicker.appspot.com",
+            messagingSenderId: "559143757551",
+            appId: "1:559143757551:web:c018039d3b34465132edd1a",
+            measurementId: "G-X7J216NSD9",
+            databaseURL: "https://baamix-clicker-default-rtdb.europe-west1.firebasedatabase.app/"
+        };
+
+        // Initialisation Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Soumission du formulaire de pseudo
+        document.getElementById('pseudoForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const pseudo = document.getElementById('pseudoInput').value.trim();
+
+            if (pseudo) {
+                document.getElementById('loadingMessage').style.display = "block";
+                localStorage.setItem('playerPseudo', pseudo);
+
+                const joueurRef = ref(database, 'players/' + pseudo);
+                set(joueurRef, {
+                    pseudo: pseudo,
+                    score: 0,
+                    dateInscription: new Date().toISOString()
+                }).then(() => {
+                    console.log("Redirection vers index.html...");
+                    window.location.href = "index.html";  // Redirection vers la page du jeu principal
+                }).catch((error) => {
+                    console.error("Erreur lors de l'enregistrement : ", error);
+                    alert("Une erreur est survenue. Veuillez réessayer.");
+                    document.getElementById('loadingMessage').style.display = "none";
+                });
+            } else {
+                alert("Veuillez entrer un pseudonyme valide !");
+            }
+        });
+    </script>
+
+    <style>
         .welcome-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #1e3b70;
+            color: white;
             padding: 20px;
-            background-color: rgba(0, 0, 0, 0.2);
+            background-image: linear-gradient(135deg, #667eea, #764ba2);
             border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
         h1 {
@@ -33,9 +91,9 @@
             margin-bottom: 20px;
         }
 
-        p {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
         }
 
         form {
@@ -46,110 +104,44 @@
 
         input[type="text"] {
             padding: 10px;
-            font-size: 1.2rem;
+            font-size: 1rem;
             border-radius: 5px;
             border: none;
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        button {
-            padding: 15px;
+        .click-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px 30px;
             font-size: 1.2rem;
-            background-color: #4CAF50;
+            background-color: #38a169;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        button:hover {
-            background-color: #45a049;
+        .click-button:hover {
+            background-color: #2f855a;
+        }
+
+        .button-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
         }
 
         #loadingMessage {
-            font-size: 1.5rem;
-            color: #ddd;
+            text-align: center;
             margin-top: 20px;
-        }
-
-        /* Responsive design */
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 2.2rem;
-            }
-
-            input[type="text"] {
-                font-size: 1rem;
-                padding: 8px;
-            }
-
-            button {
-                font-size: 1rem;
-                padding: 10px;
-            }
+            font-size: 1.2rem;
+            color: white;
         }
     </style>
-</head>
-<body>
-    <div class="welcome-container">
-        <h1>Baa-Clicker</h1>
-        <p>Entrez votre pseudonyme pour commencer :</p>
-        <form id="pseudoForm">
-            <input type="text" id="pseudoInput" placeholder="Entrez votre pseudonyme" required>
-            <button type="submit">Commencer</button>
-        </form>
-        <div id="loadingMessage" style="display: none;">Chargement en cours...</div>
-    </div>
-
-    <script type="module">
-        // Import des fonctions Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
-
-        // Configuration Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyAt4S0P...",
-            authDomain: "baamix-clicker.firebaseapp.com",
-            databaseURL: "https://baamix-clicker-default-rtdb.europe-west1.firebasedatabase.app/",
-            projectId: "baamix-clicker",
-            storageBucket: "baamix-clicker.appspot.com",
-            messagingSenderId: "559143757551",
-            appId: "1:559143757551:web:c018039d3b34465132edd1a",
-            measurementId: "G-X7J216NSD9"
-        };
-
-        // Initialisation Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-
-        // Gestion du formulaire
-        document.getElementById('pseudoForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const pseudo = document.getElementById('pseudoInput').value.trim();
-
-            if (pseudo) {
-                document.getElementById('loadingMessage').style.display = "block";
-                localStorage.setItem('pseudo', pseudo);  // Stockage local du pseudo
-
-                const joueurRef = ref(database, 'players/' + pseudo);
-                set(joueurRef, {
-                    pseudo: pseudo,
-                    score: 0,
-                    dateInscription: new Date().toISOString()
-                }).then(() => {
-                    // Redirection vers la page principale après l'enregistrement
-                    setTimeout(() => {
-                        console.log("Redirection vers index.html");
-                        window.location.href = "index.html";
-                    }, 1000);
-                }).catch((error) => {
-                    console.error("Erreur lors de l'enregistrement : ", error);
-                    alert("Une erreur est survenue lors de l'enregistrement. Veuillez réessayer.");
-                    document.getElementById('loadingMessage').style.display = "none";
-                });
-            } else {
-                alert("Veuillez entrer un pseudonyme valide !");
-            }
-        });
-    </script>
 </body>
 </html>

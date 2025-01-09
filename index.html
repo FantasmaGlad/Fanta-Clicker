@@ -1,136 +1,85 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BaaMix Clicker</title>
-    <style>
-        /* Style de la page du jeu */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #0077b6, #9d4edd);
-            color: white;
-            text-align: center;
-        }
-
-        .game-container {
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.2);
-            border-radius: 15px;
-            width: 100%;
-            max-width: 600px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        }
-
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-
-        #welcomeMessage {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-        }
-
-        #clickButton {
-            width: 150px;
-            height: 150px;
-            background-color: #4CAF50;
-            color: white;
-            font-size: 1.5rem;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            transition: transform 0.1s ease-in-out, background-color 0.3s;
-        }
-
-        #clickButton span {
-            display: block;
-            margin-top: 40%;
-            font-size: 1.2rem;
-        }
-
-        #clickButton:hover {
-            background-color: #3e8e41;
-        }
-
-        #clickButton:active {
-            transform: scale(1.1);
-        }
-
-        #score {
-            margin-top: 20px;
-            font-size: 2rem;
-        }
-
-        /* Responsive design */
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 2.2rem;
-            }
-
-            #clickButton {
-                width: 120px;
-                height: 120px;
-            }
-
-            #score {
-                font-size: 1.5rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="game-container">
-        <h1>Baa-Clicker</h1>
-        <p id="welcomeMessage">Bienvenue, joueur !</p>
-        <button id="clickButton">
-            <span>Clique-moi !</span>
-        </button>
-        <p id="score">Score : 0</p>
-    </div>
-
+    <link rel="stylesheet" href="style.css">
     <script type="module">
-        // Import des fonctions Firebase
+        // Import Firebase SDK
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
         import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
-        // Configuration Firebase
         const firebaseConfig = {
-            apiKey: "AIzaSyAt4S0P...",
+            apiKey: "AIzaSyAt4S0P5Jr1roapnPmDVw_MPqQfWtkb_dIk",
             authDomain: "baamix-clicker.firebaseapp.com",
-            databaseURL: "https://baamix-clicker-default-rtdb.europe-west1.firebasedatabase.app/",
             projectId: "baamix-clicker",
             storageBucket: "baamix-clicker.appspot.com",
             messagingSenderId: "559143757551",
             appId: "1:559143757551:web:c018039d3b34465132edd1a",
-            measurementId: "G-X7J216NSD9"
+            measurementId: "G-X7J216NSD9",
+            databaseURL: "https://baamix-clicker-default-rtdb.europe-west1.firebasedatabase.app/"
         };
 
-        // Initialisation Firebase
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
+    </script>
+</head>
 
-        // Récupération du pseudonyme
-        const pseudo = localStorage.getItem('pseudo');
+<body>
+    <div class="main-container">
+        <h1>Baa-Clicker</h1>
+        <p id="welcomeMessage"></p>
+
+        <div class="game-layout">
+            <!-- Jeu principal -->
+            <div class="clicker-container">
+                <button id="clickButton">
+                    <img src="images/BaaTman.png" alt="Icône BaaTman" class="click-image">
+                    Clique-moi !
+                </button>
+                <p id="score">Score : 0</p>
+            </div>
+
+            <!-- Bandeau des améliorations -->
+            <div class="upgrade-banner">
+                <h2>Améliorations</h2>
+                <div class="upgrade" id="ferme">
+                    <p>Ferme à Baamix</p>
+                    <p>Produit automatiquement des points toutes les secondes.</p>
+                    <button id="buyFerme">Acheter pour 50 points</button>
+                </div>
+                <div class="upgrade" id="usine">
+                    <p>Usine à Baamix</p>
+                    <p>Double votre production de points.</p>
+                    <button id="buyUsine">Acheter pour 200 points</button>
+                </div>
+                <div class="upgrade" id="machine">
+                    <p>Super Machine</p>
+                    <p>Génère un gros bonus toutes les minutes.</p>
+                    <button id="buyMachine">Acheter pour 500 points</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const pseudo = localStorage.getItem("playerPseudo");
         if (!pseudo) {
-            window.location.href = "welcome.html";  // Redirection vers welcome si le pseudo est absent
+            window.location.href = "welcome.html";  // Redirection si pas de pseudo
         }
 
         document.getElementById("welcomeMessage").innerText = `Bienvenue, ${pseudo} !`;
 
-        // Chargement du son de clic
         const clickSound = new Audio('sons/clic-souris.mp3');
 
         let score = 0;
+        let fermePoints = 1;
+        let usinePoints = 0;
+        let machinePoints = 0;
 
-        // Charger le score sauvegardé lors du chargement
         window.onload = function () {
             const savedScore = localStorage.getItem(`score_${pseudo}`);
             if (savedScore) {
@@ -139,22 +88,68 @@
             }
         };
 
-        // Gestion du clic sur le bouton
+        // Fonction pour ajouter des points manuellement
         document.getElementById("clickButton").addEventListener("click", () => {
             score++;
             document.getElementById("score").innerText = `Score : ${score}`;
-            clickSound.play();  // Jouer le son
-
-            // Sauvegarde locale du score
+            clickSound.play();
             localStorage.setItem(`score_${pseudo}`, score);
 
-            // Mise à jour du score dans Firebase
             const playerRef = ref(database, `players/${pseudo}`);
-            update(playerRef, {
-                score: score,
-                lastClick: new Date().toISOString()
-            });
+            update(playerRef, { score: score });
         });
+
+        // Achats d'améliorations
+        document.getElementById("buyFerme").addEventListener("click", () => {
+            if (score >= 50) {
+                score -= 50;
+                fermePoints += 1;
+                document.getElementById("score").innerText = `Score : ${score}`;
+                localStorage.setItem(`score_${pseudo}`, score);
+                alert("Ferme achetée ! Production améliorée.");
+            } else {
+                alert("Pas assez de points pour acheter cette amélioration !");
+            }
+        });
+
+        document.getElementById("buyUsine").addEventListener("click", () => {
+            if (score >= 200) {
+                score -= 200;
+                usinePoints += 2;
+                document.getElementById("score").innerText = `Score : ${score}`;
+                alert("Usine achetée ! Production doublée.");
+            } else {
+                alert("Pas assez de points pour acheter cette amélioration !");
+            }
+        });
+
+        document.getElementById("buyMachine").addEventListener("click", () => {
+            if (score >= 500) {
+                score -= 500;
+                machinePoints += 10;
+                document.getElementById("score").innerText = `Score : ${score}`;
+                alert("Super Machine achetée ! Générez des bonus chaque minute !");
+            } else {
+                alert("Pas assez de points pour acheter cette amélioration !");
+            }
+        });
+
+        // Production automatique
+        setInterval(() => {
+            score += fermePoints;
+            document.getElementById("score").innerText = `Score : ${score}`;
+            localStorage.setItem(`score_${pseudo}`, score);
+        }, 1000);  // Production toutes les secondes
+
+        // Bonus toutes les minutes
+        setInterval(() => {
+            if (machinePoints > 0) {
+                score += machinePoints;
+                document.getElementById("score").innerText = `Score : ${score}`;
+                alert("Bonus de Super Machine ajouté !");
+            }
+        }, 60000);  // Une fois par minute
     </script>
 </body>
+
 </html>
