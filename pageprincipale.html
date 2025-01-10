@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baa-Clicker - Jeu</title>
+    <link rel="stylesheet" href="assets/styles/global.css">
+</head>
+
+<body>
+    <!-- Header principal -->
+    <header class="header-principal">
+        <h1>Baa-Clicker</h1>
+        <h2>Usine à Baamix de <span id="pseudo-joueur">"Pseudo"</span></h2>
+    </header>
+
+    <!-- Conteneur principal -->
+    <div class="container-jeu">
+        <!-- Colonne gauche - Quêtes -->
+        <div class="colonne-gauche">
+            <h3>Quêtes</h3>
+            <div id="quetes-container">
+                <!-- Quêtes insérées dynamiquement ici -->
+            </div>
+        </div>
+
+        <!-- Colonne centrale - Bouton Baamix -->
+        <div class="colonne-centrale">
+            <button id="bouton-baamix">
+                <img src="assets/images/skins/baamixbg.png" alt="Baamix" class="baamix-icon">
+            </button>
+            <div id="barre-progression-global" class="barre-progression">
+                <span id="score">Score : 0</span>
+                <span id="production">Production par seconde : 0</span>
+            </div>
+        </div>
+
+        <!-- Colonne droite - Améliorations -->
+        <div class="colonne-droite">
+            <h3>Améliorations</h3>
+            <div id="ameliorations-container">
+                <!-- Améliorations insérées dynamiquement ici -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Import des scripts -->
+    <script src="scripts/database.js"></script>
+    <script src="scripts/utile.js"></script>
+    <script src="scripts/quetesprincipal.js"></script>
+    <script src="scripts/ameliorationsprincipal.js"></script>
+</body>
+
+</html>

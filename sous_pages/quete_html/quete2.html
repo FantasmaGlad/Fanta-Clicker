@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quête 2 - Baa-Clicker</title>
+    <link rel="stylesheet" href="../../assets/styles/global.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Quête 2</h1>
+        <p>Objectif : Acheter 10 "Usine 1"</p>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <p id="status">Progression : 0/10 "Usine 1"</p>
+
+        <button id="claim-button" class="disabled-button" disabled>Réclamer la récompense</button>
+        <button class="back-button" id="return-to-game">Retour au jeu</button>
+    </div>
+
+    <script src="../../scripts/utile.js"></script>
+    <script>
+        let objectifAchat = 10;
+        let achatsEffectues = 0;
+
+        function verifierProgression() {
+            const usinesAchetees = parseInt(localStorage.getItem("usine1_count") || 0); // Nombre d'Usine 1 achetées
+            if (usinesAchetees >= objectifAchat) {
+                document.getElementById("status").innerText = `Progression : ${objectifAchat}/${objectifAchat} "Usine 1"`;
+                document.getElementById("progress-bar").style.width = "100%";
+                const boutonReclamer = document.getElementById("claim-button");
+                boutonReclamer.disabled = false;
+                boutonReclamer.classList.remove("disabled-button");
+                boutonReclamer.classList.add("active-button");
+            } else {
+                const pourcentage = Math.min((usinesAchetees / objectifAchat) * 100, 100);
+                document.getElementById("progress-bar").style.width = `${pourcentage}%`;
+                document.getElementById("status").innerText = `Progression : ${usinesAchetees}/${objectifAchat} "Usine 1"`;
+            }
+        }
+
+        window.onload = () => {
+            const returnButton = document.getElementById("return-to-game");
+            returnButton.addEventListener("click", () => {
+                window.location.href = "../../pageprincipale.html";
+            });
+
+            const boutonReclamer = document.getElementById("claim-button");
+            boutonReclamer.addEventListener("click", () => {
+                if (!boutonReclamer.disabled) {
+                    jouerSonReussite("../../assets/sons/amelio.mp3");
+                    alert("Quête 2 accomplie ! Félicitations !");
+                }
+            });
+
+            setInterval(verifierProgression, 500); // Vérifie la progression toutes les 500ms
+        };
+    </script>
+</body>
+
+</html>

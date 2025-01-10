@@ -1,77 +1,77 @@
-// database.js - Fichier pour gérer les interactions avec Firebase
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-import { getDatabase, ref, set, update, onValue } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+// **database.js** - Gestion des données du jeu Baa-Clicker
 
-// Configuration Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyAt4S8P5J1roapnPmDVw_MPqgfwIKb_dIk",
-    authDomain: "baamix-clicker.firebaseapp.com",
-    databaseURL: "https://baamix-clicker-default-rtdb.europe-west1.firebasedatabase.app/",
-    projectId: "baamix-clicker",
-    storageBucket: "baamix-clicker.appspot.com",
-    messagingSenderId: "559143757551",
-    appId: "1:559143757551:web:c018039d3b34465132edd1a",
-    measurementId: "G-X7J216NSD9"
-};
-
-// Initialisation de l'application Firebase
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
-
-/**
- * Enregistre un nouveau joueur dans la base de données avec son pseudo.
- * @param {string} pseudo - Le pseudonyme du joueur.
- */
-export function registerPlayer(pseudo) {
-    const playerRef = ref(database, `players/${pseudo}`);
-    set(playerRef, {
-        pseudo: pseudo,
+// Chargement de la sauvegarde complète du jeu
+function chargerDonneesJeu() {
+    const sauvegarde = chargerSauvegarde("donneesJeu");
+    return sauvegarde || {
         score: 0,
-        upgrades: {
-            "Ferme à Baamix": 0,
-            "Usine à Baamix": 0,
-            "Super Machine": 0
-        },
-        dateJoined: new Date().toISOString()
-    });
+        productionParSeconde: 0,
+        ameliorations: {},
+        quetes: {}
+    };
 }
 
-/**
- * Met à jour le score d'un joueur dans la base de données.
- * @param {string} pseudo - Le pseudonyme du joueur.
- * @param {number} score - Le score actuel du joueur.
- */
-export function updatePlayerScore(pseudo, score) {
-    const playerRef = ref(database, `players/${pseudo}`);
-    update(playerRef, { score: score });
+// Sauvegarde complète du jeu
+function sauvegarderDonneesJeu(donnees) {
+    sauvegarder("donneesJeu", donnees);
 }
 
-/**
- * Met à jour les statistiques d'achat d'améliorations.
- * @param {string} pseudo - Le pseudonyme du joueur.
- * @param {string} upgradeName - Le nom de l'amélioration achetée.
- * @param {number} quantity - La quantité d'améliorations achetées.
- */
-export function updatePlayerUpgrades(pseudo, upgradeName, quantity) {
-    const upgradesRef = ref(database, `players/${pseudo}/upgrades/${upgradeName}`);
-    onValue(upgradesRef, (snapshot) => {
-        const currentCount = snapshot.val() || 0;
-        update(upgradesRef, { ".value": currentCount + quantity });
-    });
+// Mise à jour des données après une action du joueur (clic ou amélioration)
+function mettreAJourDonneesJeu(nouvelleProduction, nouvelleAmelioration) {
+    const donnees = chargerDonneesJeu();
+    donnees.score += nouvelleProduction || 0;
+    if (nouvelleAmelioration) {
+        const { nom, cout, gain } = nouvelleAmelioration;
+        donnees.ameliorations[nom] = donnees.ameliorations[nom] || { nombre: 0, totalCout: 0 };
+        donnees.ameliorations[nom].nombre += 1;
+        donnees.ameliorations[nom].totalCout += cout;
+        donnees.productionParSeconde += gain;
+    }
+    sauvegarderDonneesJeu(donnees);
 }
 
-/**
- * Récupère les données du joueur et exécute une fonction de rappel.
- * @param {string} pseudo - Le pseudonyme du joueur.
- * @param {function} callback - Fonction de rappel pour utiliser les données.
- */
-export function getPlayerData(pseudo, callback) {
-    const playerRef = ref(database, `players/${pseudo}`);
-    onValue(playerRef, (snapshot) => {
-        if (snapshot.exists()) {
-            callback(snapshot.val());
-        } else {
-            console.warn(`Aucun joueur trouvé avec le pseudo : ${pseudo}`);
-        }
-    });
+// Enregistrement de la progression d'une quête
+function enregistrerProgressionQuete(nomQuete, valeur) {
+    const donnees = chargerDonneesJeu();
+    donnees.quetes[nomQuete] = valeur;
+    sauvegarderDonneesJeu(donnees);
 }
+
+// Réinitialisation des données du jeu
+function reinitialiserDonneesJeu() {
+    if (confirm("Voulez-vous vraiment réinitialiser vos données ?")) {
+        sauvegarderDonneesJeu({
+            score: 0,
+            productionParSeconde: 0,
+            ameliorations: {},
+            quetes: {}
+        });
+        afficherNotification("Données réinitialisées avec succès.", "warning");
+        window.location.reload();
+    }
+}
+
+// Fonction pour charger le score à l'écran
+function afficherScore() {
+    const donnees = chargerDonneesJeu();
+    const scoreElement = document.getElementById("score");
+    if (scoreElement) {
+        scoreElement.innerText = formatNombre(donnees.score) + " Baamix";
+    }
+}
+
+// Fonction pour charger la production par seconde à l'écran
+function afficherProductionParSeconde() {
+    const donnees = chargerDonneesJeu();
+    const productionElement = document.getElementById("production-par-seconde");
+    if (productionElement) {
+        productionElement.innerText = `Production par seconde : ${formatNombre(donnees.productionParSeconde)} Baamix`;
+    }
+}
+
+// Gestion de l'auto-sauvegarde toutes les 10 secondes
+setInterval(() => {
+    const donnees = chargerDonneesJeu();
+    sauvegarderDonneesJeu(donnees);
+    console.log("Sauvegarde automatique effectuée.");
+}, 10000);

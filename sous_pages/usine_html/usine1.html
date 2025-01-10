@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usine 1 - Baa-Clicker</title>
+    <link rel="stylesheet" href="../../assets/styles/global.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Usine à Baamix N°1</h1>
+        <p>Description : Augmente la production de Baamix de **+1/s**.</p>
+
+        <div class="stats-container">
+            <p id="price-display">Prix actuel : 10 Baamix</p>
+            <p id="owned-units">Nombre possédé : 0</p>
+        </div>
+
+        <button id="buy-button">Acheter</button>
+        <button class="back-button" id="return-to-game">Retour au jeu</button>
+    </div>
+
+    <script src="../../scripts/utile.js"></script>
+    <script>
+        let prixUsine = 10;
+        let usinesPossedees = 0;
+        let multiplicateurPrix = 1.1;
+
+        function mettreAJourAffichage() {
+            document.getElementById("price-display").innerText = `Prix actuel : ${Math.ceil(prixUsine)} Baamix`;
+            document.getElementById("owned-units").innerText = `Nombre possédé : ${usinesPossedees}`;
+        }
+
+        function acheterUsine() {
+            const scoreActuel = parseInt(localStorage.getItem("baamix_score") || 0);
+            if (scoreActuel >= prixUsine) {
+                const nouveauScore = scoreActuel - prixUsine;
+                usinesPossedees += 1;
+                prixUsine *= multiplicateurPrix;
+
+                localStorage.setItem("baamix_score", nouveauScore);
+                localStorage.setItem("usine1_possedees", usinesPossedees);
+
+                jouerSonClic("../../assets/sons/clic-souris.mp3");
+                mettreAJourAffichage();
+                alert(`Vous avez acheté une Usine 1 ! Votre production augmente !`);
+            } else {
+                alert("Pas assez de Baamix pour acheter cette usine !");
+            }
+        }
+
+        window.onload = () => {
+            const returnButton = document.getElementById("return-to-game");
+            returnButton.addEventListener("click", () => {
+                window.location.href = "../../pageprincipale.html";
+            });
+
+            const boutonAcheter = document.getElementById("buy-button");
+            boutonAcheter.addEventListener("click", acheterUsine);
+
+            usinesPossedees = parseInt(localStorage.getItem("usine1_possedees") || 0);
+            prixUsine = 10 * Math.pow(multiplicateurPrix, usinesPossedees);
+            mettreAJourAffichage();
+        };
+    </script>
+</body>
+
+</html>
