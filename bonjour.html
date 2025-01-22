@@ -4,69 +4,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenue sur Baa-Clicker</title>
-    <link rel="stylesheet" href="assets/styles/global.css">
+    <title>Bienvenue sur BaaClicker</title>
+    <link rel="stylesheet" href="bonjour.css">
+    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js"></script>
+    <script src="database.js" defer></script>
+    <script src="bonjour.js" defer></script>
 </head>
 
 <body>
-    <!-- Conteneur de la page d'accueil -->
-    <div class="welcome-container">
-        <h1>Bienvenue sur Baa-Clicker !</h1>
-        <p>Entrez votre pseudonyme pour commencer votre aventure :</p>
-        <input type="text" id="pseudo-input" placeholder="Entrez votre pseudonyme...">
-        <button id="commencer-btn">Commencer</button>
+    <h1 class="title">Bienvenue sur BaaClicker !</h1>
+    <h2 class="subtitle">Entrez votre pseudonyme pour commencer votre aventure :</h2>
 
-        <h3>Choisissez la couleur du bouton :</h3>
-        <div class="color-selection">
-            <div class="color-option" data-color="#00b894" style="background-color: #00b894;"></div>
-            <div class="color-option" data-color="#0984e3" style="background-color: #0984e3;"></div>
-            <div class="color-option" data-color="#e17055" style="background-color: #e17055;"></div>
-            <div class="color-option" data-color="#fd79a8" style="background-color: #fd79a8;"></div>
-            <div class="color-option" data-color="#6c5ce7" style="background-color: #6c5ce7;"></div>
+    <div class="form-container">
+        <input type="text" id="pseudo" placeholder="Entrez votre pseudonyme">
+
+        <div class="skin-selector">
+            <p>Sélectionnez votre skin :</p>
+            <div class="skins">
+                <img src="../dessins_et_sons/images/Skins/baamixbg.png" class="skin-option" data-skin="Cartoon Baamix">
+                <img src="../dessins_et_sons/images/Skins/Baatman.png" class="skin-option" data-skin="Baatman">
+                <img src="../dessins_et_sons/images/Skins/RoiBaamix.png" class="skin-option" data-skin="Roi Baamix">
+                <img src="../dessins_et_sons/images/Skins/SkinPixelBaamix.png" class="skin-option" data-skin="Pixel Baamix">
+            </div>
+            <p id="selected-skin-name">Aucun skin sélectionné</p>
         </div>
-        <p id="selection-info">Votre progression est sauvegardée automatiquement.</p>
 
-        <img src="assets/images/skins/Baatman.png" alt="Baamix" class="baatman-image">
+        <button id="start-game">Commencer</button>
     </div>
 
-    <!-- Import des scripts -->
-    <script>
-        window.onload = () => {
-            const audio = new Audio('assets/sons/musiques/welcome.mp3');
-            audio.volume = 0.5;
-            try {
-                audio.play().catch(() => {
-                    document.getElementById("selection-info").textContent = "Le son de bienvenue n'a pas pu être joué. Activez le son dans votre navigateur.";
-                });
-            } catch (error) {
-                console.error("Erreur audio : ", error);
-            }
-
-            const boutonCommencer = document.getElementById("commencer-btn");
-            const pseudoInput = document.getElementById("pseudo-input");
-            let couleurSelectionnee = "#00b894"; // Couleur par défaut
-
-            // Sélection des couleurs
-            document.querySelectorAll('.color-option').forEach(option => {
-                option.addEventListener('click', () => {
-                    couleurSelectionnee = option.getAttribute('data-color');
-                    document.getElementById("selection-info").textContent = `Couleur sélectionnée : ${couleurSelectionnee}`;
-                });
-            });
-
-            // Action bouton commencer
-            boutonCommencer.addEventListener('click', () => {
-                const pseudo = pseudoInput.value.trim();
-                if (pseudo.length >= 3) {
-                    localStorage.setItem("pseudo", pseudo);
-                    localStorage.setItem("boutonColor", couleurSelectionnee);
-                    window.location.href = "pageprincipale.html";
-                } else {
-                    alert("Le pseudonyme doit contenir au moins 3 caractères !");
-                }
-            });
-        };
-    </script>
+    <footer>
+        &copy; 2025 FantaGames - BaaClicker
+    </footer>
 </body>
 
 </html>

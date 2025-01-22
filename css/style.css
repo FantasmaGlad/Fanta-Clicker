@@ -1,0 +1,124 @@
+/* ------------------------------
+   PROTOCOLE BAAMIX style.css Version 1.0
+   ------------------------------ */
+
+/* Style global */
+body {
+  font-family: 'Comic Sans MS', 'Arial', sans-serif; /* Dynamique et enfantin */
+  background-color: #f0f8ff; /* Bleu clair pour une ambiance ludique */
+  color: #333;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Conteneur principal */
+#game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Bouton principal de clic */
+#click-button {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #ffcc00, #ff9900);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2), inset 0 5px 10px rgba(255, 255, 255, 0.5);
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  font-size: 20px;
+  color: white;
+  font-weight: bold;
+}
+
+#click-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 15px 20px rgba(0, 0, 0, 0.3), inset 0 3px 6px rgba(255, 255, 255, 0.7);
+}
+
+#click-button:active {
+  transform: scale(0.9);
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+}
+
+/* Affichage du score */
+#score {
+  font-size: 30px;
+  font-weight: bold;
+  margin: 20px 0;
+  color: #ff6600;
+  text-shadow: 1px 1px 2px #fff;
+}
+
+/* Conteneur des usines */
+#factory-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+  width: 80%;
+  max-width: 1000px;
+}
+
+/* Carte d'usine */
+.factory {
+  background-color: #fff;
+  border: 2px solid #ffcc00;
+  border-radius: 15px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.factory:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Image de l'usine */
+.factory img {
+  width: 100px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+/* Bouton d'achat */
+.factory button {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.factory button:hover {
+  background-color: #cc5200;
+}
+
+.factory button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Footer ou signature */
+footer {
+  position: absolute;
+  bottom: 10px;
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+  width: 100%;
+}

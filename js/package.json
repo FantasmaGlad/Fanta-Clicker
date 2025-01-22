@@ -1,0 +1,48 @@
+{
+  "name": "baamix-clicker",
+  "version": "1.0.0",
+  "description": "Un jeu clicker compétitif basé sur Firebase et Google OAuth",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack serve --mode development --open",
+    "build": "webpack --mode production",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "clicker-game",
+    "firebase",
+    "google-oauth",
+    "competitive"
+  ],
+  "author": "Ton Nom",
+  "license": "MIT",
+  "dependencies": {
+    "firebase": "^9.22.0",
+    "axios": "^1.4.0",
+    "dotenv": "^16.0.3",
+    "lodash": "^4.17.21",
+    "gsap": "^3.12.2",
+    "zustand": "^4.3.2",
+    "lazysizes": "^5.3.2",
+    "intersection-observer": "^0.12.3",
+    "@firebase/analytics": "^9.22.0",
+    "prebid.js": "^7.30.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.9",
+    "@babel/preset-env": "^7.22.9",
+    "babel-loader": "^9.1.2",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
+    "eslint": "^8.48.0",
+    "prettier": "^3.0.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-config-prettier": "^9.0.0",
+    "sass": "^1.66.1",
+    "tailwindcss": "^3.3.3",
+    "postcss": "^8.4.26",
+    "autoprefixer": "^10.4.15"
+  }
+}
