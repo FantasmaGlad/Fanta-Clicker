@@ -1,41 +1,32 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenue sur BaaClicker</title>
-    <link rel="stylesheet" href="bonjour.css">
-    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js"></script>
-    <script src="database.js" defer></script>
-    <script src="bonjour.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenue sur BaaClicker</title>
+  <link rel="stylesheet" href="css/bonjour.css">
 </head>
-
 <body>
-    <h1 class="title">Bienvenue sur BaaClicker !</h1>
-    <h2 class="subtitle">Entrez votre pseudonyme pour commencer votre aventure :</h2>
+  <div class="container">
+    <h1>Bienvenue sur BaaClicker</h1>
 
-    <div class="form-container">
-        <input type="text" id="pseudo" placeholder="Entrez votre pseudonyme">
+    <div class="options">
+      <div class="option">
+        <img src="assets/images/Skins/baamixbg.png" alt="Skin invité" class="avatar">
+        <button id="bouton-invite" class="btn">Jouer en tant qu'invité</button>
+      </div>
 
-        <div class="skin-selector">
-            <p>Sélectionnez votre skin :</p>
-            <div class="skins">
-                <img src="../dessins_et_sons/images/Skins/baamixbg.png" class="skin-option" data-skin="Cartoon Baamix">
-                <img src="../dessins_et_sons/images/Skins/Baatman.png" class="skin-option" data-skin="Baatman">
-                <img src="../dessins_et_sons/images/Skins/RoiBaamix.png" class="skin-option" data-skin="Roi Baamix">
-                <img src="../dessins_et_sons/images/Skins/SkinPixelBaamix.png" class="skin-option" data-skin="Pixel Baamix">
-            </div>
-            <p id="selected-skin-name">Aucun skin sélectionné</p>
-        </div>
-
-        <button id="start-game">Commencer</button>
+      <div class="option">
+        <img src="assets/images/Skins/Baatman.png" alt="Skin Google" class="avatar">
+        <button id="bouton-google" class="btn">Se connecter avec Google</button>
+      </div>
     </div>
 
     <footer>
-        &copy; 2025 FantaGames - BaaClicker
+      <p>&copy; 2025 FantaGames. Tous droits réservés.</p>
     </footer>
-</body>
+  </div>
 
+  <script type="module" src="js/bonjour.js"></script>
+</body>
 </html>

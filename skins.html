@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choix des Skins</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/skins.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Choisissez votre Skin</h1>
+    </header>
+
+    <main>
+      <section class="skins">
+        <div class="skin" id="skin-cartoon">
+          <img src="assets/images/Skins/baamixbg.png" alt="Cartoon Baamix">
+          <p>Cartoon Baamix</p>
+          <button class="btn" onclick="selectionnerSkin('Cartoon Baamix')">Sélectionner</button>
+        </div>
+
+        <div class="skin" id="skin-baatman">
+          <img src="assets/images/Skins/Baatman.png" alt="Baatman">
+          <p>Baatman</p>
+          <button class="btn" onclick="selectionnerSkin('Baatman')">Sélectionner</button>
+        </div>
+
+        <div class="skin" id="skin-roi">
+          <img src="assets/images/Skins/RoiBaamix.png" alt="Roi Baamix">
+          <p>Roi Baamix</p>
+          <button class="btn" onclick="selectionnerSkin('Roi Baamix')">Sélectionner</button>
+        </div>
+
+        <div class="skin" id="skin-pixel">
+          <img src="assets/images/Skins/SkinPixelBaamix.png" alt="Pixel Baamix">
+          <p>Pixel Baamix</p>
+          <button class="btn" onclick="selectionnerSkin('Pixel Baamix')">Sélectionner</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 FantaGames. Tous droits réservés.</p>
+    </footer>
+  </div>
+
+  <script type="module" src="js/skins.js"></script>
+</body>
+</html>

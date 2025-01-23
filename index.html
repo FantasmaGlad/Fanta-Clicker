@@ -1,35 +1,51 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baamix Clicker</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/index.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BaaClicker - Le Clicker Compétitif</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
+  <div class="container">
     <header>
-        <h1>Bienvenue sur Baamix Clicker</h1>
+      <h1>Usine à Baamix de...</h1>
     </header>
 
     <main>
-        <div id="game-container">
-            <p id="score">Score : 0</p>
-            <button id="click-button">Cliquez ici !</button>
-            <div id="factory-container">
-                <!-- Les usines seront générées ici dynamiquement -->
-            </div>
+      <div class="game">
+        <div id="conteneur-quetes" class="sidebar-left">
+          <!-- Les quêtes seront injectées ici par JS -->
         </div>
+
+        <div class="main-area">
+          <img src="assets/images/Skins/baamixbg.png" id="baamix-button" alt="Baamix" onclick="gererClic()">
+          <div class="score">
+            <p id="baamix-score">0 Baamix</p>
+            <p id="baamix-par-seconde">par seconde : 0</p>
+          </div>
+        </div>
+
+        <div id="conteneur-usines" class="sidebar-right">
+          <!-- Les usines seront injectées ici par JS -->
+        </div>
+      </div>
+
+      <div class="menu">
+        <button onclick="ouvrirSkins()">Skins</button>
+        <button onclick="ouvrirRegles()">Règles</button>
+        <button onclick="ouvrirConditions()">Conditions</button>
+      </div>
     </main>
 
     <footer>
-        <nav>
-            <a href="regles.html">Règles</a> |
-            <a href="conditions.html">Conditions</a>
-        </nav>
-        <p>&copy; 2025 Baamix Clicker. Tous droits réservés.</p>
+      <p>&copy; 2025 FantaGames. Tous droits réservés.</p>
     </footer>
+  </div>
 
-    <script type="module" src="js/script.js"></script>
+  <script type="module" src="js/script.js"></script>
+  <script type="module" src="js/quetes.js"></script>
+  <script type="module" src="js/usines.js"></script>
 </body>
 </html>

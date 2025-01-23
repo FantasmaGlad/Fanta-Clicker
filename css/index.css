@@ -1,86 +1,100 @@
-/* ------------------------------
-   PROTOCOLE BAAMIX index.css Version 1.0
-   ------------------------------ */
+/* Styles pour la page principale (index.html) */
 
-/* Style global spécifique à la page index.html */
 body {
-  background-color: #e0f7fa; /* Bleu pastel apaisant */
-  font-family: 'Arial', sans-serif;
   margin: 0;
   padding: 0;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  background: url('../assets/images/Fonds/fondjeubaamix.webp') no-repeat center center fixed;
+  background-size: cover;
+  color: #333;
 }
 
-header {
-  background-color: #00796b; /* Vert profond dynamique */
-  color: #ffffff;
-  padding: 20px;
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
   text-align: center;
-  font-size: 24px;
 }
 
-/* Section principale */
-main {
+header h1 {
+  font-size: 2.5rem;
+  color: #6a5acd;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  margin-top: 1rem;
+}
+
+.game {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.sidebar-left, .sidebar-right {
+  width: 20%;
+  max-width: 300px;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
+  height: 80%;
+}
+
+.main-area {
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 80px); /* Enlève la taille de l'en-tête et du pied de page */
 }
 
-main h1 {
-  font-size: 32px;
-  color: #004d40;
-  text-shadow: 1px 1px 2px #b2dfdb;
-}
-
-/* Bouton principal */
-main .play-button {
-  background-color: #ff9800; /* Orange vif pour attirer l'attention */
-  color: #fff;
-  font-size: 20px;
-  padding: 15px 30px;
-  margin: 20px 0;
-  border: none;
-  border-radius: 25px;
+#baamix-button {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
 }
 
-main .play-button:hover {
-  background-color: #f57c00;
+#baamix-button:hover {
   transform: scale(1.1);
 }
 
-main .play-button:active {
-  background-color: #e65100;
-  transform: scale(0.95);
+.score {
+  margin-top: 1rem;
+  font-size: 1.5rem;
+  color: #333;
 }
 
-/* Navigation liens */
-main .links {
-  margin-top: 20px;
+.menu {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem 0;
 }
 
-main .links a {
-  text-decoration: none;
-  color: #00796b;
-  font-size: 18px;
-  margin: 0 15px;
-  transition: color 0.3s;
+.menu button {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #6a5acd;
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-main .links a:hover {
-  color: #004d40;
+.menu button:hover {
+  background-color: #5a4db2;
+  transform: scale(1.05);
 }
 
-/* Footer */
 footer {
-  background-color: #004d40;
-  color: #ffffff;
   text-align: center;
-  padding: 10px;
-  position: relative;
-  bottom: 0;
-  width: 100%;
-  font-size: 14px;
+  font-size: 0.9rem;
+  color: #fff;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }

@@ -1,36 +1,66 @@
-// ------------------------------
-// PROTOCOLE BAAMIX bonjour.js Version 1.0
-// ------------------------------
+// Gestion de la page Bonjour (connexion ou invité)
 
-// Importer les modules nécessaires pour l'authentification Google
-import { signInWithGoogle } from "./auth.js";
+import { sauvegarderDonneesUtilisateur, synchroniserDonnees } from "./database.js";
 
-// DOM Elements
-const googleButton = document.getElementById("google-login-button");
-const nicknameInput = document.getElementById("nickname");
-const submitButton = document.getElementById("submit-button");
+// Variables globales
+const utilisateurID = localStorage.getItem("baaclicker_utilisateur") || null;
 
-/**
- * Gestion de l'événement de connexion Google
- */
-googleButton.addEventListener("click", () => {
-    signInWithGoogle();
+// Fonction pour générer un pseudo aléatoire pour le mode invité
+function genererPseudoInvite() {
+  const pseudo = `BaamixLover${Math.floor(Math.random() * 10000)}`;
+  localStorage.setItem("baaclicker_utilisateur", pseudo);
+  return pseudo;
+}
+
+// Gestion du bouton "Jouer en tant qu'invité"
+const boutonInvite = document.getElementById("bouton-invite");
+boutonInvite.addEventListener("click", () => {
+  const pseudo = genererPseudoInvite();
+  const donneesInitiales = {
+    points: 0,
+    usines: [],
+    quetes: [],
+  };
+
+  localStorage.setItem("baaclicker_donnees", JSON.stringify(donneesInitiales));
+  sauvegarderDonneesUtilisateur(pseudo, donneesInitiales);
+
+  // Redirection vers la page principale
+  window.location.href = "index.html";
 });
 
-/**
- * Validation du pseudonyme et navigation
- */
-submitButton.addEventListener("click", () => {
-    const nickname = nicknameInput.value.trim();
+// Gestion du bouton "Se connecter avec Google"
+const boutonGoogle = document.getElementById("bouton-google");
+boutonGoogle.addEventListener("click", () => {
+  // Logique pour lancer l'authentification Google
+  // Cette fonctionnalité repose sur le fichier auth.js
+  import("./auth.js").then((authModule) => {
+    authModule.connexionGoogle().then((utilisateur) => {
+      localStorage.setItem("baaclicker_utilisateur", utilisateur.uid);
 
-    if (nickname === "") {
-        alert("Veuillez entrer un pseudonyme.");
-        return;
-    }
+      // Synchroniser les données de l'utilisateur après connexion
+      const donneesLocales = JSON.parse(localStorage.getItem("baaclicker_donnees")) || {};
+      synchroniserDonnees(utilisateur.uid, donneesLocales);
 
-    // Sauvegarder le pseudonyme dans localStorage
-    localStorage.setItem("nickname", nickname);
+      // Redirection vers la page principale
+      window.location.href = "index.html";
+    });
+  });
+});
 
-    // Rediriger vers la page principale
+// Initialisation de la page Bonjour
+function initialiserPageBonjour() {
+  if (utilisateurID) {
+    // Si l'utilisateur est déjà connecté ou invité, redirection automatique
     window.location.href = "index.html";
-});
+  }
+}
+
+// Charger l'initialisation après le chargement de la page
+window.onload = initialiserPageBonjour;
+
+// Export des fonctions (utile pour tests)
+export {
+  initialiserPageBonjour,
+  genererPseudoInvite,
+};

@@ -1,78 +1,83 @@
-// ------------------------------
-// PROTOCOLE BAAMIX database.js Version 1.0
-// ------------------------------
+// Gestion de la base de données Firebase
 
-// Importer Firebase et le module de base de données
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getDatabase, ref, set, get, update, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, set, get, update } from "firebase/database";
 
-// Charger les variables d'environnement
+// Configuration Firebase
 const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-    appId: import.meta.env.VITE_FIREBASE_APP_ID,
-    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+  apiKey: "VOTRE_API_KEY",
+  authDomain: "VOTRE_AUTH_DOMAIN",
+  databaseURL: "VOTRE_DATABASE_URL",
+  projectId: "VOTRE_PROJECT_ID",
+  storageBucket: "VOTRE_STORAGE_BUCKET",
+  messagingSenderId: "VOTRE_MESSAGING_SENDER_ID",
+  appId: "VOTRE_APP_ID",
 };
 
 // Initialisation Firebase
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const database = getDatabase(app);
 
-/**
- * Sauvegarder les données du joueur dans Firebase.
- * @param {string} userId - L'ID unique du joueur.
- * @param {object} data - Les données à sauvegarder.
- */
-export function savePlayerData(userId, data) {
-    const playerRef = ref(db, 'players/' + userId);
-    set(playerRef, data)
-        .then(() => console.log("Données sauvegardées avec succès dans Firebase."))
-        .catch((error) => console.error("Erreur lors de la sauvegarde des données :", error));
+// Fonction pour sauvegarder les données utilisateur dans Firebase
+function sauvegarderDonneesUtilisateur(uid, donnees) {
+  const reference = ref(database, `utilisateurs/${uid}`);
+  set(reference, donnees)
+    .then(() => {
+      console.log("Données sauvegardées avec succès.");
+    })
+    .catch((error) => {
+      console.error("Erreur lors de la sauvegarde des données :", error);
+    });
 }
 
-/**
- * Récupérer les données du joueur depuis Firebase.
- * @param {string} userId - L'ID unique du joueur.
- * @param {function} callback - Fonction callback pour gérer les données récupérées.
- */
-export function getPlayerData(userId, callback) {
-    const playerRef = ref(db, 'players/' + userId);
-    get(playerRef)
-        .then((snapshot) => {
-            if (snapshot.exists()) {
-                callback(snapshot.val());
-            } else {
-                console.warn("Aucune donnée trouvée pour l'utilisateur :", userId);
-                callback(null);
-            }
-        })
-        .catch((error) => console.error("Erreur lors de la récupération des données :", error));
+// Fonction pour charger les données utilisateur depuis Firebase
+function chargerDonneesUtilisateur(uid) {
+  const reference = ref(database, `utilisateurs/${uid}`);
+  return get(reference)
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        return snapshot.val();
+      } else {
+        console.log("Aucune donnée trouvée pour cet utilisateur.");
+        return null;
+      }
+    })
+    .catch((error) => {
+      console.error("Erreur lors du chargement des données :", error);
+      return null;
+    });
 }
 
-/**
- * Mettre à jour partiellement les données du joueur.
- * @param {string} userId - L'ID unique du joueur.
- * @param {object} updates - Les données à mettre à jour.
- */
-export function updatePlayerData(userId, updates) {
-    const playerRef = ref(db, 'players/' + userId);
-    update(playerRef, updates)
-        .then(() => console.log("Données mises à jour avec succès."))
-        .catch((error) => console.error("Erreur lors de la mise à jour des données :", error));
+// Fonction pour mettre à jour les données utilisateur
+function mettreAJourDonneesUtilisateur(uid, nouvellesDonnees) {
+  const reference = ref(database, `utilisateurs/${uid}`);
+  update(reference, nouvellesDonnees)
+    .then(() => {
+      console.log("Données mises à jour avec succès.");
+    })
+    .catch((error) => {
+      console.error("Erreur lors de la mise à jour des données :", error);
+    });
 }
 
-/**
- * Écouter les changements en temps réel pour un joueur.
- * @param {string} userId - L'ID unique du joueur.
- * @param {function} callback - Fonction callback appelée à chaque mise à jour.
- */
-export function listenToPlayerData(userId, callback) {
-    const playerRef = ref(db, 'players/' + userId);
-    onValue(playerRef, (snapshot) => {
-        callback(snapshot.val());
-    }, (error) => console.error("Erreur lors de l'écoute des données :", error));
+// Gestion de la synchronisation entre localStorage et Firebase
+function synchroniserDonnees(uid, donneesLocalStorage) {
+  chargerDonneesUtilisateur(uid).then((donneesFirebase) => {
+    if (!donneesFirebase) {
+      // Si aucune donnée Firebase, sauvegarder les données locales
+      sauvegarderDonneesUtilisateur(uid, donneesLocalStorage);
+    } else {
+      // Fusionner les données locales et Firebase
+      const donneesFusionnees = { ...donneesFirebase, ...donneesLocalStorage };
+      sauvegarderDonneesUtilisateur(uid, donneesFusionnees);
+    }
+  });
 }
+
+// Export des fonctions pour utilisation
+export {
+  sauvegarderDonneesUtilisateur,
+  chargerDonneesUtilisateur,
+  mettreAJourDonneesUtilisateur,
+  synchroniserDonnees,
+};

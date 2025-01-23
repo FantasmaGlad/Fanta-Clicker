@@ -1,0 +1,60 @@
+/* Styles pour la gestion des quêtes */
+
+.sidebar-left .quete {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.sidebar-left .quete h3 {
+  font-size: 1.2rem;
+  color: #6a5acd;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-left .quete p {
+  font-size: 1rem;
+  color: #333;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 20px;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #32cd32;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+.sidebar-left .quete img {
+  width: 50px;
+  height: 50px;
+  margin-top: 0.5rem;
+  border-radius: 50%;
+}
+
+.sidebar-left .quete button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  color: #fff;
+  background-color: #6a5acd;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar-left .quete button:hover {
+  background-color: #5a4db2;
+}
